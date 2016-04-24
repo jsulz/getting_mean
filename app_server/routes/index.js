@@ -1,9 +1,17 @@
 var express = require('express');
 var router = express.Router();
-var mainController = require('../controllers/main');
+var locationsController = require('../controllers/locations');
+var othersController = require('../controllers/others');
 
-/* GET home page. */
-/* Imported from controllers/main.js */
-router.get('/', mainController.index);
+/* GET locations-based views */
+/* Imported from controllers/locations.js */
+router.get('/', locationsController.homelist);
+router.get('/location', locationsController.locations);
+router.get('/location/review/new', locationsController.addReview);
+
+
+/* GET other views */
+/* Imported from controllers/others.js */
+router.get('/about', othersController.about);
 
 module.exports = router;
