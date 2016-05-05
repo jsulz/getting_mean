@@ -1,6 +1,12 @@
 /* GET the homepage view */
 module.exports.homelist = function( req, res ){
-    res.render('locations-list', { title: 'Home' });
+    res.render('locations-list', { 
+    	title: 'Loc8r',
+    	pageHeader: {
+    		title: 'Loc8r',
+    		strapLine: 'Find places to work with wifi near you!'
+    	} 
+    });
 };
 
 /* GET the add review view */
