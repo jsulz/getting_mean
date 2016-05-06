@@ -1,43 +1,38 @@
+include includes/sharedHTMLfunctions.jade
+
 extends layout
 
 block content
   .row.page-header
     .col-lg-12
-      h1 Starcups
+      h1=title
   .row
     .col-xs-12.col-md-9
       .row
         .col-xs-12.col-sm-6
           p.rating
-            span.glyphicon.glyphicon-star
-            span.glyphicon.glyphicon-star
-            span.glyphicon.glyphicon-star
-            span.glyphicon.glyphicon-star-empty
-            span.glyphicon.glyphicon-star-empty
-          p 125 High Street, Reading, RG6 1PS
+            +outputRating(location.rating)
+          p=location.address
           .panel.panel-primary
             .panel-heading
               h2.panel-title Opening hours
             .panel-body
-              p Monday - Friday : 7:00am - 7:00pm
-              p Saturday : 8:00am - 5:00pm
-              p Sunday : closed
+              each openingTime in location.openingTimes
+                p
+                  | #{openingTime.days}
+                  if openingTime.closed
+                    |  closed
+                  else
+                    | #{openingTime.oepning} - #{openingTime.closing}
           .panel.panel-primary
             .panel-heading
               h2.panel-title Facilities
             .panel-body
-              span.label.label-warning
-                span.glyphicon.glyphicon-ok
-                | &nbsp;Hot drinks
-              | &nbsp;
-              span.label.label-warning
-                span.glyphicon.glyphicon-ok
-                | &nbsp;Food
-              | &nbsp;
-              span.label.label-warning
-                span.glyphicon.glyphicon-ok
-                | &nbsp;Premium wifi
-              | &nbsp;
+              each facility in location.facilities
+                span.label.label-warning
+                  span.glyphicon.glyphicon-ok
+                  | &nbsp; facility
+                | &nbsp;
         .col-xs-12.col-sm-6.location-map
           .panel.panel-primary
             .panel-heading
