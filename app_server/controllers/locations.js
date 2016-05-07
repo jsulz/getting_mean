@@ -31,7 +31,10 @@ module.exports.homelist = function( req, res ){
 
 /* GET the add review view */
 module.exports.addReview = function( req, res ){
-    res.render('location-review-form', { title: 'Add Revew' });
+    res.render('location-review-form', {
+        title: 'Review Starcups on Loc8r',
+        pageHeader: 'Review Starcups'
+    });
 };
 
 /* Get the locations view */
@@ -51,8 +54,8 @@ module.exports.locationInfo = function( req, res ){
             rating: 3,
             facilities: ['Hot drinks', 'Food', 'Premium wifi'],
             coords: {
-                lat: 51.455041,
-                lng: -0.9690884
+                lat: 45.7219,
+                lng: -112.1922
             },
             openingTimes: [{
                 days: 'Monday - Friday',

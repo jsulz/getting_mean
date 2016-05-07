@@ -38,7 +38,7 @@ block content
             .panel-heading
               h2.panel-title Location map
             .panel-body
-              img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center=51.455041,-0.9690884&zoom=17&size=400x350&sensor=false&markers=51.455041,-0.9690884&scale=2')
+              img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center=#{location.coords.lat},#{location.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{location.coords.lat},#{location.coords.lng}&scale=2')
       .row
         .col-xs-12
           .panel.panel-primary.review-panel
@@ -46,34 +46,18 @@ block content
               a.btn.btn-default.pull-right(href='/location/review/new') Add review
               h2.panel-title Customer reviews
             .panel-body.review-container
-              .row
-                .review
-                  .well.well-sm.review-header
-                    span.rating
-                      span.glyphicon.glyphicon-star
-                      span.glyphicon.glyphicon-star
-                      span.glyphicon.glyphicon-star
-                      span.glyphicon.glyphicon-star
-                      span.glyphicon.glyphicon-star
-                    span.reviewAuthor Simon Holmes
-                    small.reviewTimestamp 16 July 2013
-                  .col-xs-12
-                    p What a great place. I can't say enough good things about it.
-              .row
-                .review
-                  .well.well-sm.review-header
-                    span.rating
-                      span.glyphicon.glyphicon-star
-                      span.glyphicon.glyphicon-star
-                      span.glyphicon.glyphicon-star
-                      span.glyphicon.glyphicon-star-empty
-                      span.glyphicon.glyphicon-star-empty
-                    span.reviewAuthor Charlie Chaplin
-                    small.reviewTimestamp 16 June 2013
-                  .col-xs-12
-                    p It was okay. Coffee wasn't great, but the wifi was fast.
+              each review in location.reviews
+                .row
+                  .review
+                    .well.well-sm.review-header
+                      span.rating
+                        +outputRating(review.rating)
+                      span.reviewAuthor #{review.author}
+                      small.reviewTimestamp #{review.timestamp}
+                    .col-xs-12
+                      p !{ (review.reviewText).replace( /\n/g,'<br/>' ) }
     .col-xs-12.col-md-3
       p.lead
-        | Starcups is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.
+        | #{title} #{sidebar.context}
       p
-        | If you've been and you like it - or if you don't - please leave a review to help other people just like you.
+        | #{sidebar.callToAction}
