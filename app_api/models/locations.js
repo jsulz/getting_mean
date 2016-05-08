@@ -29,4 +29,5 @@ var locationSchema = new mongoose.Schema( {
     reviews: [reviewsSchema]
 } );
 
+//create a mongoose model that we'll use in the app_api/controllers file when interacting with the API
 mongoose.model( 'Location', locationSchema );
