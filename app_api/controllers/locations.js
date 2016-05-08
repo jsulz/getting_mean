@@ -3,17 +3,42 @@ var Loc = mongoose.model('Location');
 
 //GET /api/locations
 module.exports.locationsListByDistance = function( req, res ) {
+    var lng = parseFloat( req.query.lng );
+    var lat = parseFloat( req.query.lat );
+    var maxDistance = parseInt( req.query.maxDistance, 10 );
+    var point = {
+        type: "Point",
+        coordinates: [ lng, lat ]
+    };
+    var geoOptions = {
+        spherical: true,
+        maxDistance : maxDistance,
+        num: 10
+    };
 
-    Loc.find( )
-        .exec( function(err, locations ){
-            if ( !locations ) {
-                sendJsonresponse(res, 404, { "message" : "No locations found" } );
-            }
-            else if ( err ) {
-                sendJsonresponse(res, 404, err);
-            }
+    if ( !lng || !lat || !maxDistance ) {
+        sendJsonresponse(res, 404, { "message" : "Sorry, please provide all parameters"});
+    }
+
+    Loc.geoNear( point, geoOptions, function( err, results, stats ) {
+        var locations = [];
+        if ( err ) {
+            sendJsonresponse(res, 404, err );
+            return;
+        } else {
+            results.forEach( function ( doc ) {
+                locations.push({
+                    distance: doc.dis,
+                    name: doc.obj.name,
+                    address: doc.obj.address,
+                    rating: doc.obj.rating,
+                    facilities: doc.obj.facilities,
+                    _id: doc.obj._id
+                });
+            });
             sendJsonresponse(res, 200, locations);
-        });
+        }
+    });
 
 };
 
@@ -49,7 +74,30 @@ module.exports.locationsReadOne = function( req, res ) {
 
 //POST /api/locations
 module.exports.locationsCreate = function( req, res ) {
-    sendJsonresponse(res, 200, { "status" : "success" } );
+    Loc.create({
+        name: req.body.name,
+        address: req.body.address,
+        facilities: req.body.facilities.split(","),
+        coords: [ parseFloat( req.body.lng), parseFloat( req.body.lat ) ],
+        openingTimes: [{
+            days: req.body.days1,
+            opening: req.body.opening1,
+            closing: req.body.closing1,
+            closed: req.body.closed1
+        },
+        {
+            days: req.body.days2,
+            opening: req.body.opening2,
+            closing: req.body.closing2,
+            closed: req.body.closed2
+        }]
+    }, function ( err, location ) {
+        if ( err ) {
+            sendJsonresponse(res, 400, err);
+        } else {
+            sendJsonresponse(res, 201, location );
+        }
+    });
 };
 
 //PUT /api/locations/:locationid
