@@ -6,7 +6,7 @@ var othersController = require('../controllers/others');
 /* GET locations-based views */
 /* Imported from controllers/locations.js */
 router.get('/', locationsController.homelist);
-router.get('/location', locationsController.locationInfo);
+router.get('/location/:locationid', locationsController.locationInfo);
 router.get('/location/review/new', locationsController.addReview);
 
 

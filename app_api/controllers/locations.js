@@ -149,8 +149,8 @@ module.exports.locationsUpdateOne = function( req, res ) {
 //DELETE /api/locations/:locationid
 module.exports.locationsDeleteOne = function( req, res ) {
     var locationId = req.params.locationid;
-    if ( locationid ) {
-        Loc.findByIdAndRemove( locationid )
+    if ( locationId ) {
+        Loc.findByIdAndRemove( locationId )
             .exec( function( err, location ) {
                 if ( err ) {
                     sendJsonresponse(res, 404, err);
