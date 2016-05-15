@@ -56,7 +56,8 @@ var renderAddreviewpage = function( req, res, responseBody ) {
     res.render('location-review-form', {
         title: 'Review ' + responseBody.name + ' on Loc8r',
         pageHeader: 'Review ' + responseBody.name,
-        error: req.query.err
+        error: req.query.err,
+        url: req.originalUrl
     });
 };
 
