@@ -1,54 +1,57 @@
 (function(){
+    var loc8rData = function ( $http ) {
+        return $http.get( '/api/locations?lng=-0.79&lat=51.3&maxDistance=100000000');
+    };
 
-    var locationListCtrl = function( $scope ) {
-        $scope.data = {
-            locations: [
-                {
-                    name: 'B.A. Barakas',
-                    address: '1324 Drewery Lane',
-                    rating: 3,
-                    facilities: ['hot', 'Hot', 'HOT', 'HOT!!'],
-                    distance: '0.248592',
-                    _id: '572e6c147f02e65b97873493'
-                },
-                {
-                    name: 'George McDucky',
-                    address: 'All the Small Things',
-                    rating: 4,
-                    facilities: ['cold', 'Cold', 'COLD', 'COLD!!'],
-                    distance: '1.2453423',
-                    _id: '572e6c147f02e65b46873493'
-                },
-                {
-                    name: 'Joshua Lynch',
-                    address: 'There is not enough fake addresses in my head',
-                    rating: 3,
-                    facilities: ['orange', 'yellow', 'green', 'blue'],
-                    distance: '0.2453423',
-                    _id: '572e6c134f02e65b97873493'
-                },
-                {
-                    name: 'Fly Like an Eagle',
-                    address: 'Philly Where I Spend Most of My Days',
-                    rating: 3,
-                    facilities: ['make', 'it', 'better'],
-                    distance: '3.248592',
-                    _id: '572e6c147fe2e65b97873493'
-                },
-                {
-                    name: 'LCD Soundsystem',
-                    address: 'New York I love You',
-                    rating: 2,
-                    facilities: ['but you\'re bringing me down'],
-                    distance: '4.248592',
-                    _id: '572e6c14fe02e65b97873493'
-                }
-            ]
+    var locationListCtrl = function( $scope, loc8rData ) {
+        $scope.message = "Searching for nearby locations";
+        loc8rData
+            .success( function( data ){
+                $scope.message = data.length > 0 ? "" : "No locations found";
+                $scope.data = { locations : data };
+             })
+            .error( function( err ){
+                $scopt.message = "Sorry, something has gone wrong";
+                console.log(e);
+            });
+    };
+
+    var _numerical = function( num ) {
+        return !isNaN( parseFloat( num ) && isFinite( num ) );
+    };
+
+    var formatDistance = function( ){
+        return function( distance ) {
+            var numericalDistance;
+            if ( !distance ) {
+                return 'Missing distance'; }
+            if ( _numerical( distance ) ) {
+                distance = parseInt(distance, 10);
+            }
+            if ( distance > 1 ) {
+                numericalDistance = parseFloat(distance).toFixed( ) + 'm';
+            } else {
+                return '>1m';
+            }
+            return numericalDistance;
+        };
+    };
+
+    var ratingStars = function(){
+        return {
+            scope: {
+                thisRating : '=rating'
+            },
+            templateUrl: '/angular/rating-stars.html'
         };
     };
 
     angular.module( 'loc8rApp', [] );
     angular.module('loc8rApp')
-            .controller( 'locationListCtrl', locationListCtrl );
+            .controller( 'locationListCtrl', locationListCtrl )
+            .filter( 'formatDistance', formatDistance )
+            .directive( 'ratingStars', ratingStars )
+            .service( 'loc8rData', loc8rData );
+
 
 })();

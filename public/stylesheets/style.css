@@ -21,3 +21,12 @@
 .panel-heading {
 	padding: 30px 15px !important;
 }
+
+.ng-isolate-scope span:first-child {
+    margin-left: 5px;
+}
+
+#filter {
+    margin-left: 5px;
+    margin-bottom: 5px;
+}

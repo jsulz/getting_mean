@@ -18,18 +18,6 @@ var renderHomepage = function( req, res, responseBody ){
     });
 };
 
-var _formattedDistance = function( distance ){
-    var numericalDistance;
-    if ( !distance ) { return 'Missing distance'; }
-    if ( typeof distance !== 'number' ) { return 'Distance needs to be a number!' ; }
-    if ( distance > 1 ) {
-        numericalDistance = parseFloat(distance).toFixed( );
-    } else {
-        return '1m';
-    }
-    return numericalDistance;
-};
-
 var renderLocationpage = function( req, res, responseBody ) {
     var message;
     if ( !responseBody.reviews.length ) {
