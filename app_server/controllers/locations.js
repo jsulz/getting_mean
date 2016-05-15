@@ -38,7 +38,6 @@ var _formattedDistance = function( distance ){
     } else {
         return '1m';
     }
-    console.log( distance );
     return numericalDistance;
 };
 
@@ -58,6 +57,29 @@ var renderLocationpage = function( req, res, responseBody ) {
         },
         location: responseBody,
         message: message
+    });
+};
+
+var _showError = function( req, res, statusCode ){
+    var title, content;
+    if ( statusCode === 404 ) {
+        title = '404, page not found';
+        content = 'Aaahhhhh shit son, ain\'t nothing here!';
+    } else {
+        title = statusCode + ' somthing has fucked up.';
+        content = 'And I think to myself, this is not my beautiful house!';
+    }
+    res.render( 'generic-text', {
+        title: title,
+        content: content
+    });
+};
+
+var renderAddreviewpage = function( req, res, responseBody ) {
+    res.render('location-review-form', {
+        title: 'Review ' + responseBody.name + ' on Loc8r',
+        pageHeader: 'Review ' + responseBody.name,
+        error: req.query.err
     });
 };
 
@@ -86,14 +108,6 @@ module.exports.homelist = function( req, res ){
 
 };
 
-/* GET the add review view */
-module.exports.addReview = function( req, res ){
-    res.render('location-review-form', {
-        title: 'Review Starcups on Loc8r',
-        pageHeader: 'Review Starcups'
-    });
-};
-
 /* Get the locations view */
 module.exports.locationInfo = function( req, res ){
     var locationId = req.params.locationid;
@@ -102,13 +116,60 @@ module.exports.locationInfo = function( req, res ){
         method: 'GET',
         json: {}
     };
-
     request( locationOptions, function( err, response, body ){
         var data = body;
-        data.coords = {
-            lng : data.coords[0],
-            lat : data.coords[1]
-        };
-        renderLocationpage( req, res, body );
+        if ( response.statusCode === 200 ) {
+            data.coords = {
+                lng : data.coords[0],
+                lat : data.coords[1]
+            };
+            renderLocationpage( req, res, body );
+        } else {
+            _showError( req, res, response.statusCode);
+        }
+    });
+};
+
+/* GET the add review view */
+module.exports.addReview = function( req, res ){
+    var locationId = req.params.locationid;
+    var locationOptions = {
+        url: apiOptions.server + 'api/locations/' + locationId,
+        method: 'GET',
+        json: {}
+    };
+    request( locationOptions, function( err, response, body ){
+        var data = body;
+        if ( response.statusCode === 200 ) {
+            renderAddreviewpage( req, res, body );
+        } else {
+            _showError(req, res, response.statusCode);
+        }
+    });
+};
+
+/* Post the form data back to the database on the add review view */
+module.exports.doAddReview = function( req, res ) {
+    var requestOptions, path, locationid, postdata;
+    locationid = req.params.locationid;
+    path = apiOptions.server + 'api/locations/' + locationid + '/reviews';
+    postdata = {
+        author: req.body.name,
+        rating: parseInt( req.body.rating, 10 ),
+        reviewText: req.body.review
+    };
+    requestOptions = {
+        url: path,
+        method: 'POST',
+        json: postdata,
+    };
+    request( requestOptions, function( err, response, body ){
+        if ( response.statusCode === 201 ) {
+            res.redirect('/location/' + locationid );
+        } else if ( response.statusCode === 400 && body.name && body.name === 'ValidationError') {
+            res.redirect( '/location/' + locationid + '/reviews/new?err=val');
+        } else {
+            _showError( req, res, response.statusCode);
+        }
     });
 };

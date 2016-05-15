@@ -14,6 +14,10 @@ var doAddReview = function( req, res, location ) {
         });
         location.save( function( err, location ){
             var thisReview;
+            if (err) {
+                console.log(err);
+                sendJsonresponse(res, 400, err);
+            }
             if ( err ) {
                 sendJsonresponse(res, 400, err);
             } else {
@@ -104,14 +108,14 @@ module.exports.reviewsReadOne = function( req, res ) {
 //POST /api/locations/:locationid/reviews
 module.exports.reviewsCreate = function( req, res ) {
     var locationId = req.params.locationid;
-    if ( locationid ) {
+    if ( locationId ) {
         Loc.findById( locationId )
             .select( 'reviews' )
             .exec( function( err, results ) {
                 if ( err ) {
                     sendJsonresponse(res, 400, err );
                 } else {
-                    doAddReview( req, res, location );
+                    doAddReview( req, res, results );
                 }
             });
     } else {
@@ -193,6 +197,6 @@ module.exports.reviewsDeleteOne = function( req, res ) {
 };
 
 var sendJsonresponse = function( res, status, content ) {
-    res.status = 200;
+    res.status(status);
     res.json(content);
 };

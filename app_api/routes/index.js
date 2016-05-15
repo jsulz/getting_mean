@@ -12,8 +12,8 @@ router.delete('/locations/:locationid', ctrlLocations.locationsDeleteOne);
 
 //reviews API requests
 router.get('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsReadOne);
-router.post('locations/:locationid/reviews', ctrlReviews.reviewsCreate);
-router.put('locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsUpdateOne);
-router.delete('locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsDeleteOne);
+router.post('/locations/:locationid/reviews', ctrlReviews.reviewsCreate);
+router.put('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsUpdateOne);
+router.delete('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsDeleteOne);
 
 module.exports = router;

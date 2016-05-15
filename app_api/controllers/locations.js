@@ -165,6 +165,6 @@ module.exports.locationsDeleteOne = function( req, res ) {
 
 
 var sendJsonresponse = function( res, status, content ) {
-    res.status = status;
+    res.status(status);
     res.json(content);
 };
